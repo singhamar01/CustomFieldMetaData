@@ -8,6 +8,7 @@ public without sharing class CustomFieldRetrieveController {
      
      
      public List<String> fieldNames;
+     public List<fieldNameWrapper> fieldNameWrap;
      public Map<String,String> fieldHelpTextMap {get;set;}
      
      Map<String, Schema.SObjectType> gd;
@@ -65,11 +66,17 @@ public without sharing class CustomFieldRetrieveController {
     public List<String> getFieldNames(){
         System.debug('selectedObject$$'+selectedObject);
         fieldNames = new List<String>();
+        fieldNameWrap = new List<fieldNameWrapper>();
         fieldHelpTextMap = new Map<String,String>();
         Schema.DescribeSObjectResult describeSObjectResultObj = gd.get(selectedObject).getDescribe();
         Map<String, Schema.SObjectField> fieldMap = describeSObjectResultObj.fields.getMap();
         for(Schema.SObjectField Sfield : fieldMap.values()){
             if(Sfield.getDescribe().isCustom()){
+                fieldNameWrapper tempObj = new fieldNameWrapper();
+                tempObj.labelName = Sfield.getDescribe().getLabel();
+                tempObj.apiName = Sfield.getDescribe().getName();
+                tempObj.dataType = Sfield.getDescribe().getType();
+                fieldNameWrap.add(tempObj);
                 fieldNames.add(Sfield.getDescribe().getName());
                 String helpText = (Sfield.getDescribe().getInlineHelpText() != null? Sfield.getDescribe().getInlineHelpText():'' );
                 fieldHelpTextMap.put(Sfield.getDescribe().getName(),helpText);
@@ -77,6 +84,35 @@ public without sharing class CustomFieldRetrieveController {
         }
         System.debug('test'+fieldNames);
         return fieldNames;         
+    }
+    
+    public List<fieldNameWrapper> getFieldNameWrap(){
+    System.debug('selectedObject$$'+selectedObject);
+    fieldNames = new List<String>();
+    fieldNameWrap = new List<fieldNameWrapper>();
+    fieldHelpTextMap = new Map<String,String>();
+    Schema.DescribeSObjectResult describeSObjectResultObj = gd.get(selectedObject).getDescribe();
+    Map<String, Schema.SObjectField> fieldMap = describeSObjectResultObj.fields.getMap();
+    for(Schema.SObjectField Sfield : fieldMap.values()){
+        if(Sfield.getDescribe().isCustom()){
+            fieldNameWrapper tempObj = new fieldNameWrapper();
+            tempObj.labelName = Sfield.getDescribe().getLabel();
+            tempObj.apiName = Sfield.getDescribe().getName();
+            tempObj.dataType = Sfield.getDescribe().getType();
+            fieldNameWrap.add(tempObj);
+            fieldNames.add(Sfield.getDescribe().getName());
+            String helpText = (Sfield.getDescribe().getInlineHelpText() != null? Sfield.getDescribe().getInlineHelpText():'' );
+            fieldHelpTextMap.put(Sfield.getDescribe().getName(),helpText);
+        }
+    }
+    System.debug('test'+fieldNames);
+    return fieldNameWrap;         
+    }
+    
+    public class fieldNameWrapper{
+        public string labelName {get;set;}
+        public string apiName {get;set;}
+        public Schema.DisplayType dataType {get;set;}
     }
 
 }
