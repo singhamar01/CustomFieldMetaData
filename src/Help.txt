@@ -1,0 +1,81 @@
+
+amasingh@amasinghwin7a MINGW64 ~
+$ cd C:/Projects/GIT01-New
+
+amasingh@amasinghwin7a MINGW64 /c/Projects/GIT01-New (master)
+$ git add .
+warning: LF will be replaced by CRLF in CustomFieldRetrieve.page.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in CustomFieldRetrieve.page-meta.xml.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in CustomFieldRetrieveController.cls.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in CustomFieldRetrieveController.cls-meta.xml.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in CustomFieldToolingAPI.cls.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in CustomFieldToolingAPI.cls-meta.xml.
+The file will have its original line endings in your working directory.
+
+amasingh@amasinghwin7a MINGW64 /c/Projects/GIT01-New (master)
+$ git pull origin master
+fatal: Couldn't find remote ref master
+
+amasingh@amasinghwin7a MINGW64 /c/Projects/GIT01-New (master)
+$ git commit -m "my code"
+[master 0f8eb6d] my code
+ Committer: unknown <amasingh@amasinghwin7a.ad.indiadev.lexmark.com>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+warning: LF will be replaced by CRLF in CustomFieldRetrieve.page.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in CustomFieldRetrieve.page-meta.xml.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in CustomFieldRetrieveController.cls.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in CustomFieldRetrieveController.cls-meta.xml.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in CustomFieldToolingAPI.cls.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in CustomFieldToolingAPI.cls-meta.xml.
+The file will have its original line endings in your working directory.
+ 6 files changed, 405 insertions(+)
+ create mode 100644 CustomFieldRetrieve.page
+ create mode 100644 CustomFieldRetrieve.page-meta.xml
+ create mode 100644 CustomFieldRetrieveController.cls
+ create mode 100644 CustomFieldRetrieveController.cls-meta.xml
+ create mode 100644 CustomFieldToolingAPI.cls
+ create mode 100644 CustomFieldToolingAPI.cls-meta.xml
+
+amasingh@amasinghwin7a MINGW64 /c/Projects/GIT01-New (master)
+$ git push orgin master
+fatal: 'orgin' does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
+amasingh@amasinghwin7a MINGW64 /c/Projects/GIT01-New (master)
+$ git push origin master
+Username for 'https://github.com': singhamar01
+Password for 'https://singhamar01@github.com':
+Counting objects: 10, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (8/8), done.
+Writing objects: 100% (10/10), 5.11 KiB | 0 bytes/s, done.
+Total 10 (delta 1), reused 0 (delta 0)
+To https://github.com/singhamar01/CustomFieldMetaData.git
+ * [new branch]      master -> master
+
+amasingh@amasinghwin7a MINGW64 /c/Projects/GIT01-New (master)
+$
