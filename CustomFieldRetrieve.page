@@ -178,9 +178,11 @@
                         <!-- -->
                         <!-- -->
                         <tbody>
-                            <apex:repeat value="{!fieldNames}" var="field">
+                            <apex:repeat value="{!fieldNameWrap}" var="field">
                              <tr>
-                                <td>{!field}</td>
+                                <td>{!field.labelName}</td>
+                                <td>{!field.apiName}</td>
+                                <td>{!field.dataType}</td>
                              </tr>
                             </apex:repeat>
                         </tbody>
