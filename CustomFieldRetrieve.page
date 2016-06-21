@@ -1,0 +1,198 @@
+<apex:page controller="CustomFieldRetrieveController"  sidebar="false" standardStylesheets="false" showHeader="false">
+  <!-- script include -->   
+    <script type="text/javascript">
+        var __sfdcSessionId = '{!GETSESSIONID()}';
+    </script>
+    <!-- -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="{!URLFor($Resource.CUBootstrap,'source/bootstrap.min.css')}"></link>
+    <!--<link rel="stylesheet" href="maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></link>-->
+    <script src="{!URLFor($Resource.CUBootstrap,'source/jquery.min.js')}"></script>
+    <script src="{!URLFor($Resource.CUBootstrap,'source/bootstrap.min.js')}"></script>
+    <!-- -->
+    <script src="../../soap/ajax/23.0/connection.js" type="text/javascript"></script>
+    
+    <script type="text/javascript">   
+
+     //--------------------------------------------------//
+        //Tab Selection
+        $(document).ready(function(){
+            $('nav ul li').click(function(){
+                var indx = $('nav ul li').index(this);
+                $('nav ul li:not(:eq('+indx+'))').removeClass('active');
+                $(this).addClass('active');
+            });
+            
+            $('ul.nav-pills li').click(function(){
+                var indx = $('ul.nav-pills li').index(this);
+                $('ul.nav-pills li:not(:eq('+indx+'))').removeClass('active');
+                $(this).addClass('active');             
+            });
+            
+            $('select').change(function(){              
+                $('#message').html('');
+                $('.option input').removeAttr("checked");
+                fnReset(-1);
+            });
+            
+            //----------------------------------//
+            $('.option input').click(function(){
+                $('#message').html('');
+                var param = $('.option input').index(this);
+                if($(this).prop("checked") == true){
+                    switch(param){
+                        case 0:
+                            getLayout();
+                            break;
+                        case 1:
+                            getValidationRule();
+                            break;
+                        case 2:
+                            getWorkflowRule();
+                            break;
+                        case 3:
+                            getWorkflowFieldUpdate();
+                            break;
+                        case 4:
+                            getCustomizedComponents();
+                            break;                              
+                        default:        
+                            console.log('Error::No selected option');
+                            break;
+                    }
+                }
+                else{
+                    fnReset(param);
+                }
+            });
+            //----------------------------------//
+            $('#overallBtn').click(function(){
+                fnShowCustomFields();
+            });
+        });
+        
+        function fnShowCustomFields(){
+           alert('test');
+            var objectName = $("select[id$=selectedObject]").val();
+            alert(objectName);  
+            fnAnalysisResult(objectName);
+        }
+        //-------------------------------------------------// 
+        //action status     
+        function loading(val) {
+            if (val) {
+                $('#contentLoading').show();
+                //$('#contentLoaded').hide();
+            }
+            else {              
+                $('#contentLoading').hide();
+                //$('#contentLoaded').show();
+            }
+        }
+        
+       function setFocus(){
+            //----------------------------//
+            var selectedLi = $('ul.nav-pills li.active');
+            var indx = $('ul.nav-pills li').index(selectedLi);
+            console.log(indx);
+            var panel = $('.panel').eq(indx+1);  
+            $('html, body').animate({
+                scrollTop: panel.offset().top
+            }, 500);
+            //----------------------------//
+        }   
+        
+    
+    </script>
+    
+        <!-- Begin content -->   
+    <div class="container">   
+        <!-- Start: Tab Section-->
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Download CustomFields</a></li>
+                    <li><a href="#">Tab2</a></li>
+                    <li><a href="#">Tab3</a></li>
+                    <li><a href="#">Tab4</a></li>
+                    <li class="pull-right"><a href="/home/home.jsp">Back To Salesforce</a></li>
+                </ul>
+            </div>
+        </nav>
+        <hr/>
+        <!-- End: Tab Section-->
+        
+        <!-- Start : Selection Criteria Section -->
+        <div class="panel panel-default">
+        <div class="panel-heading"><a data-toggle="collapse" href="#sobjectPanel">Select Sobjects</a></div> 
+            <div class="panel-body collapse in" id="sobjectPanel">
+               <!-- Start: form -->
+                <apex:form html-role="form" styleClass="form-horizontal">
+                   <!-- Start : CustomFields Layout analysis-->
+                    <apex:actionFunction name="fnAnalysisResult" reRender="analysisCustomFieldsLayoutSection" immediate="true" status="loading" oncomplete="setFocus()">
+                            <apex:param assignTo="{!selectedObject}" value="" name="objectName"/>           
+                    </apex:actionFunction>
+                   <!-- End : CustomFields Layout analysis-->
+                   <apex:actionStatus id="loading" onstart="loading(true)" onstop="loading(false)" />
+                   
+                 <div class="form-group">
+                        <label class="control-label col-sm-2" for="{!$Component.selectedObject}">Select Object</label>
+
+                        <div class="col-sm-4">
+                            <apex:selectList value="{!selectedObject}" size="1" id="selectedObject" styleClass="form-control input-sm">
+                                <apex:selectOptions value="{!objectList}"></apex:selectOptions>
+                            </apex:selectList>
+                        </div>
+                 </div>             
+                 <!-- Start: Snapshot buuton Section -->
+                 <div class="form-group">
+                        <div class="col-sm-2">&nbsp;</div>
+                        <div class="col-sm-8">
+                            <button type="button" class="btn btn-primary col-sm-3" id="overallBtn">View CustomFields</button>                            
+                            <div class="col-sm-8" id="message"></div>
+                        </div>
+                    </div>
+                <!-- End: Snapshot Button Section -->
+                </apex:form>
+                <!-- End: form -->
+            </div>
+        </div>
+        <!-- End : Selection Criteria Section -->
+        
+        <!-- Start : Analyzed CustomFields Layout Section -->
+        <apex:outputPanel id="analysisCustomFieldsLayoutSection">
+          <apex:outputPanel rendered="{!AND((selectedObject!=null))}" layout="block" styleClass="panel panel-default" >
+             <div class="panel-heading">
+                <a data-toggle="collapse" href="#customFieldsSection">Custom Fields Section</a> 
+                <div class="panel-body table-responsive collapse in" id="customFieldsSection">
+                   <table width="100%" class="table table-hover table-bordered"> 
+                       <!-- -->
+                        <thead>
+                            <tr>
+                                <th class="headerClass">Field Label</th>
+                                <th class="headerClass">Field Name </th>
+                                <th class="headerClass">Data Type </th>
+                            </tr>
+                        </thead>
+                        <!-- -->
+                        <!-- -->
+                        <tbody>
+                            <apex:repeat value="{!fieldNames}" var="field">
+                             <tr>
+                                <td>{!field}</td>
+                             </tr>
+                            </apex:repeat>
+                        </tbody>
+                        <!-- -->        
+                   </table>
+                </div>
+
+            </div>            
+                      
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- Start : Analyzed CustomFields Layout Section -->
+    </div>  
+    <!-- End content -->    
+</apex:page>
