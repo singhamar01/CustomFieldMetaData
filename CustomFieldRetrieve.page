@@ -81,6 +81,7 @@
         //-------------------------------------------------// 
         //action status     
         function loading(val) {
+            //alert(val);
             if (val) {
                 $('#contentLoading').show();
                 //$('#contentLoaded').hide();
@@ -118,6 +119,19 @@
     span.noIssue button{
             color:#ffffff;
             background-color:#286090;
+    }
+    /* ***************************** */
+    #contentLoading{
+            width:100%;
+            height : 100%;
+            z-index:100;
+            position:absolute;
+            background-color:#EDEDED;
+            top:0;
+            left:0;
+            opacity: 0.8;
+            filter: alpha(opacity=80); 
+            -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)"
     }
     
     </style>
@@ -214,5 +228,12 @@
         </apex:outputPanel>
         <!-- Start : Analyzed CustomFields Layout Section -->
     </div>  
-    <!-- End content -->    
+    <!-- End content --> 
+    <!--Start : action status loading-->
+    <div id="contentLoading" style="display:none;">
+        <div style="text-align: center;padding:300px;">
+            <!--<label class="loadingLabel">Loading …</label>--><img src="{!URLFor($Resource.CUBootstrap,'source/loading.gif')}" alt="Loading graphic" height="60px"/>
+        </div>
+    </div>  
+<!--End : action status loading-->   
 </apex:page>
