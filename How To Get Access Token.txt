@@ -1,0 +1,34 @@
+  string clientId = 'Your orgs clientId';
+  string clientSecret = 'Your orgs clientSecret';
+
+  string username = 'sf username';
+  string password = 'sf password';
+
+  String reqbody = 'grant_type=password&client_id='+clientId+'&client_secret='+clientSecret+'&username='+username+'&password='+password;
+  Http h = new Http();
+  HttpRequest req = new HttpRequest();
+  req.setBody(reqbody);
+  req.setMethod('POST');
+  req.setEndpoint('https://login.salesforce.com/services/oauth2/token');
+  HttpResponse res = h.send(req);
+  System.debug('res::'+res.getBody());
+  JSONReturnAccessToken resp1 = (JSONReturnAccessToken)JSON.deserialize(res.getbody(),JSONReturnAccessToken.class);
+  System.debug('Access Token'+resp1.access_token);
+
+  string ACCESS_TOKEN = resp1.access_token;
+  string EndURL = resp1.instance_url+'/services/data/v37.0/tooling/query/?q=Select+DeveloperName+from+CustomObject';
+
+   req = new HttpRequest();
+   req.setHeader('Content-type', 'application/json');
+   req.setHeader('Authorization', 'Bearer ' + ACCESS_TOKEN);
+   
+   req.setEndpoint(EndURL); 
+   req.setMethod('GET');
+   Http http = new Http();
+   res = http.send(req);
+   System.debug('result::'+res.getBody());   
+
+   JSONReturnCustomObject deserCustObj = (JSONReturnCustomObject)JSON.deserialize(res.getbody(),JSONReturnCustomObject.class);
+   System.debug('entityTypeName:: '+deserCustObj.entityTypeName);
+   System.debug('DeveloperName:: '+deserCustObj.records[0].DeveloperName);
+   
