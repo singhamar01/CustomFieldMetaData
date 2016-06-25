@@ -1,0 +1,73 @@
+<apex:page controller="ManageOrgController" sidebar="false" standardStylesheets="false" showHeader="false">
+   
+       <!-- Start : Org Selection Section -->
+        <div class="panel panel-default">
+        <div class="panel-heading"><a data-toggle="collapse" href="#selectOrgSection">Select Organization</a></div>
+           <div class="panel-body collapse in" id="selectOrgSection">
+             <!-- Start: form -->
+              <apex:form html-role="form" styleClass="form-horizontal">
+                  
+                 <div class="form-group">
+                        <label class="control-label col-sm-2" for="{!$Component.selectedOrgID}">Select Org</label>
+
+                        <div class="col-sm-4">
+                            <apex:selectList value="{!selectedOrg}" size="1" id="selectedOrgID" styleClass="form-control input-sm">
+                                <apex:selectOptions value="{!myOrgList}"></apex:selectOptions>
+                            </apex:selectList>
+                        </div>
+                        <button type="button" class="btn btn-primary col-sm-1" id="connectBtn">Connect</button>
+                 </div> 
+                 
+               <!-- <div class="form-group">
+                   <label class="control-label col-sm-2" for="{!$Component.connectionStatus}">Connection Status</label>
+                   <div class="col-sm-4"> -->
+                   <!-- <apex:outputText id="connectionStatus" value="{!orgconnectionStatus}" styleClass="control-label col-sm-8" /> -->
+               <!--   <label class="control-label data" style="font-weight:normal;" id="connectionStatus">
+                            {!connectionStatus}
+                        </label>
+                   </div>
+                 </div> -->     
+              
+              </apex:form>
+              <!-- End: form -->    
+           </div>          
+        </div>
+        <!-- End : Org Selection Section -->
+        <!-- Start : Analyzed CustomFields Layout Section -->
+        <apex:outputPanel id="analyzeConnectionLayoutSection">
+          <apex:outputPanel rendered="{!AND((orgconnectionStatus!='Not-Connected'))}" layout="block" styleClass="panel panel-default" >
+           <div class="panel-heading">
+                    <a data-toggle="collapse" href="#customFieldsSection">Connection Section</a> 
+           </div>
+           <div class="panel-body table-responsive collapse in" id="customFieldsSection">
+               <!-- Start : form -->    
+               <apex:form html-role="form" styleClass="form-horizontal">
+               <!-- -->
+               <div class="form-group">
+                   <label class="control-label col-sm-2" for="{!$Component.connectionStatus}">Connection Status</label>        
+                    <div class="col-sm-4">
+                           <label class="control-label data" style="font-weight:normal;" id="connectionStatus">
+                                {!connectionStatus}
+                           </label>
+                    </div>
+                </div>
+                <!-- -->                
+                <!-- -->
+                <apex:outputPanel rendered="{!AND((customObjectList!=null))}">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="{!$Component.selectedCustObject}">Select CustomObject</label>
+                    <div class="col-sm-4">
+                        <apex:selectList value="{!selectedCustObject}" size="1" id="selectedCustObject" styleClass="form-control input-sm">
+                            <apex:selectOptions value="{!customObjectList}"></apex:selectOptions>
+                        </apex:selectList>
+                    </div>
+                </div>
+                </apex:outputPanel>
+               <!-- --> 
+              </apex:form>
+              <!-- End: form -->               
+           </div>
+           </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- End : Analyzed CustomFields Layout Section -->  
+</apex:page>
