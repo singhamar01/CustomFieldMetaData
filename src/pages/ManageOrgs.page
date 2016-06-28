@@ -1,4 +1,13 @@
-<apex:page controller="ManageOrgController" sidebar="false" standardStylesheets="false" showHeader="false">
+<apex:page controller="CustomFieldRetrieveController" sidebar="false" standardStylesheets="false" showHeader="false">
+
+      <script>
+         function fetchMetadata(){
+           mdata = $("select[id$=selectedMetadata]").val();
+           alert(mdata);
+           fnFetchSelectedMdata(mdata);
+         }
+      
+      </script>
    
        <!-- Start : Org Selection Section -->
         <div class="panel panel-default">
@@ -6,6 +15,12 @@
            <div class="panel-body collapse in" id="selectOrgSection">
              <!-- Start: form -->
               <apex:form html-role="form" styleClass="form-horizontal">
+                <apex:pagemessages />
+                 <!-- Start : Fetch selected mdata Action Function -->
+                    <apex:actionFunction name="fnFetchSelectedMdata" action="{!FetchSelectedMdata}" reRender="analyzeConnectionLayoutSection" immediate="true" status="loading" oncomplete="setFocus()">
+                            <apex:param assignTo="{!selectedMetadata}" value="" name="mdata"/>           
+                    </apex:actionFunction>
+                <!-- End : Fetch selected mdata Action Function -->
                   
                  <div class="form-group">
                         <label class="control-label col-sm-2" for="{!$Component.selectedOrgID}">Select Org</label>
@@ -58,12 +73,25 @@
                     <label class="control-label col-sm-2" for="{!$Component.selectedCustObject}">Select CustomObject</label>
                     <div class="col-sm-4">
                         <apex:selectList value="{!selectedCustObject}" size="1" id="selectedCustObject" styleClass="form-control input-sm">
-                            <apex:selectOptions value="{!customObjectList}"></apex:selectOptions>
+                            <apex:selectOptions value="{!customObjectList}" ></apex:selectOptions>
                         </apex:selectList>
                     </div>
                 </div>
                 </apex:outputPanel>
                <!-- --> 
+               <!-- Select Metadata --> 
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="{!$Component.selectedCustObject}">Select Metadata:</label>
+                    <div class="col-sm-4">
+                        <apex:selectList value="{!selectedMetadata}" size="1" id="selectedMetadata" styleClass="form-control input-sm" onchange="fetchMetadata();">
+                            <apex:selectOptions value="{!metaDataList}"></apex:selectOptions>
+                        </apex:selectList>
+                    </div>
+                    <div class="col-sm-4">
+                        {!mdataCount}
+                    </div>
+                </div>
+               <!-- Select Metadata --> 
               </apex:form>
               <!-- End: form -->               
            </div>
