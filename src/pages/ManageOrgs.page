@@ -3,11 +3,16 @@
       <script>
          function fetchMetadata(){
            mdata = $("select[id$=selectedMetadata]").val();
-           alert(mdata);
+           //alert(mdata);
            fnFetchSelectedMdata(mdata);
          }
-      
-      </script>
+         function updateMdataCount(param){
+                
+                var mdataText = $("[id$=selectedMetadata] option:selected").text();
+                var newText = mdataText + '(' + param + ')';
+                $("[id$=selectedMetadata] option:selected" ).text(newText);
+          }
+     </script>
    
        <!-- Start : Org Selection Section -->
         <div class="panel panel-default">
@@ -17,7 +22,7 @@
               <apex:form html-role="form" styleClass="form-horizontal">
                 <apex:pagemessages />
                  <!-- Start : Fetch selected mdata Action Function -->
-                    <apex:actionFunction name="fnFetchSelectedMdata" action="{!FetchSelectedMdata}" reRender="analyzeConnectionLayoutSection" immediate="true" status="loading" oncomplete="setFocus()">
+                    <apex:actionFunction name="fnFetchSelectedMdata" action="{!FetchSelectedMdata}" reRender="updateMdataCountPanel" immediate="true" status="loading">
                             <apex:param assignTo="{!selectedMetadata}" value="" name="mdata"/>           
                     </apex:actionFunction>
                 <!-- End : Fetch selected mdata Action Function -->
@@ -98,4 +103,15 @@
            </apex:outputPanel>
         </apex:outputPanel>
         <!-- End : Analyzed CustomFields Layout Section -->  
+        
+        <apex:outputPanel id="updateMdataCountPanel">
+            <apex:outputPanel rendered="{!count != null}" layout="none">
+               <script>
+                updateMdataCount('{!count}');      
+              </script>
+          </apex:outputPanel>
+          <div class="col-sm-4">
+                        {!mdataCount}
+          </div>
+        </apex:outputPanel>
 </apex:page>
