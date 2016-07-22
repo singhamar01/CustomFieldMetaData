@@ -1,0 +1,14 @@
+<apex:page standardController="Account" recordSetVar="accounts" tabstyle="account" sidebar="false" extensions="accountStandardSetController">
+  <apex:form>
+  <apex:pageBlock >
+    <apex:commandButton action="{!first}" value="First"/>
+    <apex:commandButton action="{!previous}" value="Previous"/>
+    <apex:commandButton action="{!next}" value="Next"/> 
+    <apex:commandButton action="{!last}" value="Last"/> &nbsp; Page Num: {!PageNumber} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Total P.No: {!TotalPageNumber}
+    <apex:pageBlockTable value="{!accounts}" var="a">
+      <apex:column value="{!a.name}"/>
+      <apex:column value="{!a.Owner.name}"/>
+    </apex:pageBlockTable>
+  </apex:pageBlock>
+  </apex:form>
+</apex:page>
