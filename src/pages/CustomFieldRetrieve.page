@@ -1,46 +1,55 @@
 <apex:page controller="CustomFieldRetrieveController"  sidebar="false" standardStylesheets="false" showHeader="false">
   <!-- script include -->   
-    <script type="text/javascript">
+    <!--<script type="text/javascript">
         var __sfdcSessionId = '{!GETSESSIONID()}';
-    </script>
+    </script>-->
     <!-- -->
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="{!URLFor($Resource.CUBootstrap,'source/bootstrap.min.css')}"></link>
+    <apex:stylesheet value="{!UrlFor($Resource.jQuery181,'/jquery/jquery-ui.css')}"/>
     <!--<link rel="stylesheet" href="maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></link>-->
-    <script src="{!URLFor($Resource.CUBootstrap,'source/jquery.min.js')}"></script>
+    <script src="{!URLFor($Resource.CUBootstrap,'source/jquery.min.js')}"></script> 
+    <!--<apex:includeScript value="{!UrlFor($Resource.jQuery181,'/jquery/jquery-1.8.js')}"/>-->
+    <!--<script src="{!URLFor($Resource.jQuery110,'jquery/jquery-1.9.1.js')}"></script>-->
+    <!--<apex:includeScript value="{!UrlFor($Resource.jQuery181,'/jquery/jquery-ui.js')}"/>-->
+    <!--<script src="{!UrlFor($Resource.jQuery181,'/jquery/jquery-1.8.js')}"></script>-->
+    <script src="{!UrlFor($Resource.jQuery181,'/jquery/jquery-ui.js')}"></script>
     <script src="{!URLFor($Resource.CUBootstrap,'source/bootstrap.min.js')}"></script>
     <!-- -->
-    <script src="../../soap/ajax/23.0/connection.js" type="text/javascript"></script>
+    
+   <!--<script src="../../soap/ajax/23.0/connection.js" type="text/javascript"></script>-->
     
     <script type="text/javascript">   
-
+        var j$ = jQuery.noConflict(); 
      //--------------------------------------------------//
         //Tab Selection
-        $(document).ready(function(){
-            $('nav ul li').click(function(){
+        j$(document).ready(function(){
+            console.log('ready');
+           //----------------------------------//
+            j$('nav ul li').click(function(){
                 var indx = $('nav ul li').index(this);
-                $('nav ul li:not(:eq('+indx+'))').removeClass('active');
-                $(this).addClass('active');
+                j$('nav ul li:not(:eq('+indx+'))').removeClass('active');
+                j$(this).addClass('active');
             });
             
-            $('ul.nav-pills li').click(function(){
+            j$('ul.nav-pills li').click(function(){
                 var indx = $('ul.nav-pills li').index(this);
-                $('ul.nav-pills li:not(:eq('+indx+'))').removeClass('active');
-                $(this).addClass('active');             
+                j$('ul.nav-pills li:not(:eq('+indx+'))').removeClass('active');
+                j$(this).addClass('active');             
             });
             
-            $('select').change(function(){              
-                $('#message').html('');
-                $('.option input').removeAttr("checked");
+            j$('select').change(function(){              
+                j$('#message').html('');
+                j$('.option input').removeAttr("checked");
                 fnReset(-1);
             });
             
             //----------------------------------//
-            $('.option input').click(function(){
-                $('#message').html('');
-                var param = $('.option input').index(this);
-                if($(this).prop("checked") == true){
+            j$('.option input').click(function(){
+                j$('#message').html('');
+                var param = j$('.option input').index(this);
+                if(j$(this).prop("checked") == true){
                     switch(param){
                         case 0:
                             getLayout();
@@ -67,27 +76,30 @@
                 }
             });
             //----------------------------------//
-            $('#overallBtn').click(function(){
+            j$('#overallBtn').click(function(){
+                console.log('click');
                 fnShowCustomFields();
             });
             //----------------------------------//
-            $('#connectBtn').click(function(){
+            j$('#connectBtn').click(function(){
                 //alert('connect');
                 fnConnectOrg();
             });
             
-        });
+            
+        }); //end of ready function.
         
         //connect to selected org
         function fnConnectOrg(){
-           var orgName = $("select[id$=selectedOrgID]").val();
+           var orgName = j$("select[id$=selectedOrgID]").val();
            //alert(orgName);
            fnConnectSelectedOrg(orgName);
+           console.log('connect');
         }
         
         function fnShowCustomFields(){
            //alert('test');
-            var objectName = $("select[id$=selectedObject]").val();
+            var objectName = j$("select[id$=selectedObject]").val();
             //alert(objectName);  
             fnAnalysisResult(objectName);
         }
@@ -96,21 +108,21 @@
         function loading(val) {
             //alert(val);
             if (val) {
-                $('#contentLoading').show();
+                j$('#contentLoading').show();
                 //$('#contentLoaded').hide();
             }
             else {              
-                $('#contentLoading').hide();
+                j$('#contentLoading').hide();
                 //$('#contentLoaded').show();
             }
         }
         
        function setFocus(){
             //----------------------------//
-            var selectedLi = $('ul.nav-pills li.active');
-            var indx = $('ul.nav-pills li').index(selectedLi);
+            var selectedLi = j$('ul.nav-pills li.active');
+            var indx = j$('ul.nav-pills li').index(selectedLi);
             console.log(indx);
-            var panel = $('.panel').eq(indx+1);  
+            var panel = j$('.panel').eq(indx+1);  
             $('html, body').animate({
                 scrollTop: panel.offset().top
             }, 500);
@@ -147,6 +159,27 @@
             -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)"
     }
     
+    .ui-autocomplete-loading { 
+           background: white url("{!$Resource.ajaxLoad}") right center no-repeat;
+           font-size:12px;
+     }  
+     .autocomplete{
+            border-color: #929292 #D5D5D5 #D5D5D5 #929292 !important;
+            border-style: solid;border-width: 1px !important;
+            height: 18px !important;
+            padding: 3px 10px;width: 534px !important;
+     }
+     .searchBtn{
+            background: #FDCE3E !important;
+            border: 1px solid #E5A716 !important;
+            color: #434343 !important;
+            height: 26px !important;
+            margin-left: 7px !important;
+            padding: 0 23px !important;
+            font-size: 15px !important; 
+            font-weight: bold !important;
+     }
+    
     </style>
     
     <!-- Begin content -->   
@@ -161,6 +194,9 @@
                 </ul>
    
         <hr/>
+        <apex:outputPanel id="refreshToken">
+            <input type="text" name="orgSessionId" value="{!orgSessionId}"/>
+        </apex:outputPanel>
         <!-- End: Tab Section-->
        <div class="tab-content panel-body"> 
        <!-- Start : HomeTab -->
@@ -178,7 +214,7 @@
                    <!-- End : CustomFields Layout analysis-->
                    
                    <!-- Start : Connect to selected org Action Function -->
-                    <apex:actionFunction name="fnConnectSelectedOrg" action="{!ConnectToOrg}" reRender="analyzeConnectionLayoutSection" immediate="true" status="loading" oncomplete="setFocus()">
+                    <apex:actionFunction name="fnConnectSelectedOrg" action="{!ConnectToOrg}" reRender="analyzeConnectionLayoutSection,refreshToken" immediate="true" status="loading" oncomplete="setFocus()">
                             <apex:param assignTo="{!selectedOrg}" value="" name="orgName"/>           
                     </apex:actionFunction>
                    <!-- End : Connect to selected org Action Function -->
@@ -204,6 +240,14 @@
                         </div>
                     </div>
                 <!-- End: Snapshot Button Section -->
+                <!-- -->
+                    <!--<center>
+                        <b style="vertical-align: middle;"> Search Record: </b> 
+                        <apex:inputText id="autocomplete_textbox" styleClass="autocomplete"/> 
+                        <apex:commandButton value="Search" styleClass="searchBtn" reRender="frmId"/>             
+                    </center>-->
+                <!-- -->
+                
                 </apex:form>
                 <!-- End: form -->
             </div>
@@ -246,6 +290,7 @@
           </apex:outputPanel>
         </apex:outputPanel>
         <!-- End : Analyzed CustomFields Layout Section -->
+        
         </div>
         <!-- End : HomeTab --> 
         <!-- Start : Tab2 -->

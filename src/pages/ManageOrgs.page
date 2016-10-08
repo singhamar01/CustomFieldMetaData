@@ -1,17 +1,86 @@
 <apex:page controller="CustomFieldRetrieveController" sidebar="false" standardStylesheets="false" showHeader="false">
 
       <script>
+         var arr =[];// ['ApexClass','VisualforcePage','Trigger'];
+         var connectionArr = [];
+         var resultSet = [];
+         var filterResultSet=[];
          function fetchMetadata(){
-           mdata = $("select[id$=selectedMetadata]").val();
-           //alert(mdata);
-           fnFetchSelectedMdata(mdata);
+           mdata = j$("select[id$=selectedMetadata]").val();
+           if(j$.inArray(mdata, arr) == -1){
+                 fnFetchSelectedMdata(mdata);
+                 arr.push(mdata);
+           }
          }
-         function updateMdataCount(param){
-                
-                var mdataText = $("[id$=selectedMetadata] option:selected").text();
+         function updateMdataCount(param){                
+                var mdataText = j$("[id$=selectedMetadata] option:selected").text();
                 var newText = mdataText + '(' + param + ')';
-                $("[id$=selectedMetadata] option:selected" ).text(newText);
+                j$("[id$=selectedMetadata] option:selected" ).text(newText);                             
           }
+          
+        function fnAutoComplete(){
+           console.log('autocomplete');
+           
+           var autoCompleteTextBoxId = "input[id$='autocomplete_textbox']";
+              var queryTerm;
+              //auto complete method
+                j$(autoCompleteTextBoxId).autocomplete({
+                    minLength: 2,
+                    source: function(request, response) {
+                                console.log(request.term);
+                                filterResultSet=[];
+                                queryTerm = request.term;
+                                var sObjects;
+                                var searchText = j$(autoCompleteTextBoxId).val();
+                                /*CustomFieldRetrieveController.getRecords(searchText,function(result, event){
+                                    if(event.type == 'exception') {
+                                          alert(event.message);
+                                    } else {
+                                         sObjects = result;
+                                         response(sObjects);
+                                    }
+                                });*/
+                                console.log('resultset size::'+resultSet.records.length);
+                                for(var i=0;i<resultSet.records.length;i++){
+                                    console.log('validate condition::'+resultSet.records[i].Name+'::'+queryTerm);
+                                    if(resultSet.records[i].Name.indexOf(queryTerm)>=0){
+                                        filterResultSet.push(resultSet.records[i]);
+                                    }
+                                }
+                                response(filterResultSet);
+                                console.log('filtered result::'+filterResultSet);
+                           },
+                    focus: function( event, ui ) {
+                            j$(autoCompleteTextBoxId).val( ui.item.Name );
+                            return false;
+                            },
+                    select: function( event, ui ) {
+                                j$(autoCompleteTextBoxId).val( ui.item.Name );                                
+                                j$("input[id$='searchId']").val(ui.item.Id);
+                                return false;
+                            },
+                 }).data( "autocomplete" )._renderItem= function( ul, item ) {
+                    
+                    //connectionArr.access_token
+                    console.log('test');
+                    var sid= j$('input[name=orgSessionId]').val();
+                    var targetURL = connectionArr.instance_url +"/secur/frontdoor.jsp?sid="+sid+"&retURL=" +"/" + item.Id;
+                  
+                    console.log('targetURL::'+targetURL);
+                    var entry = "<a href='"+ targetURL + "'" + " target='_new'>" + item.Name;
+                    /*j$.each("".split(",") , function(key, value) {
+                        entry = entry + " <b>" + item.sObjectName+'abc' +"</b>";
+                    });*/
+                    entry = entry + "</a>";
+                    console.log('entry::'+entry);
+                    entry = entry.replace(queryTerm, "<b>" + queryTerm + "</b>");
+                    return j$( "<li></li>" )
+                        .data( "item.autocomplete", item )
+                        .append( entry )
+                        .appendTo( ul );
+                    
+             };
+        }  
      </script>
    
        <!-- Start : Org Selection Section -->
@@ -37,17 +106,7 @@
                         </div>
                         <button type="button" class="btn btn-primary col-sm-1" id="connectBtn">Connect</button>
                  </div> 
-                 
-               <!-- <div class="form-group">
-                   <label class="control-label col-sm-2" for="{!$Component.connectionStatus}">Connection Status</label>
-                   <div class="col-sm-4"> -->
-                   <!-- <apex:outputText id="connectionStatus" value="{!orgconnectionStatus}" styleClass="control-label col-sm-8" /> -->
-               <!--   <label class="control-label data" style="font-weight:normal;" id="connectionStatus">
-                            {!connectionStatus}
-                        </label>
-                   </div>
-                 </div> -->     
-              
+                            
               </apex:form>
               <!-- End: form -->    
            </div>          
@@ -86,7 +145,7 @@
                <!-- --> 
                <!-- Select Metadata --> 
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="{!$Component.selectedCustObject}">Select Metadata:</label>
+                    <label class="control-label col-sm-2" for="{!$Component.selectedMetadata}">Select Metadata:</label>
                     <div class="col-sm-4">
                         <apex:selectList value="{!selectedMetadata}" size="1" id="selectedMetadata" styleClass="form-control input-sm" onchange="fetchMetadata();">
                             <apex:selectOptions value="{!metaDataList}"></apex:selectOptions>
@@ -97,6 +156,20 @@
                     </div>
                 </div>
                <!-- Select Metadata --> 
+               <!-- autocomplete inputText -->
+               <apex:outputPanel id="advancedSearchTextBox">
+                 <div class="form-group">
+                      <label class="control-label col-sm-2" for="{!$Component.autocomplete_textbox}">Advanced Search</label>
+                      <div class="col-sm-4">
+                          <apex:inputText id="autocomplete_textbox" styleClass="form-control input-sm"/>
+                      </div>
+                  </div>
+                  <script>
+                    fnAutoComplete();      
+                 </script>
+                </apex:outputPanel>  
+               <!-- autocomplete inputText -->
+               
               </apex:form>
               <!-- End: form -->               
            </div>
@@ -107,11 +180,17 @@
         <apex:outputPanel id="updateMdataCountPanel">
             <apex:outputPanel rendered="{!count != null}" layout="none">
                <script>
+                resultSet = j$.parseJSON('{!resultSetJSON}');
+                console.log(resultSet);
+                connectionArr = j$.parseJSON('{!accessTokenJSON}');
+                console.log(connectionArr); 
                 updateMdataCount('{!count}');      
               </script>
           </apex:outputPanel>
           <div class="col-sm-4">
-                        {!mdataCount}
+                   {!mdataCount}<br/>
+                  
           </div>
         </apex:outputPanel>
+        
 </apex:page>
