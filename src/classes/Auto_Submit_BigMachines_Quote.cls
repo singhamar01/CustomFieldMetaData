@@ -1,4 +1,4 @@
-global class LX_Auto_Submit_BigMachines_Quote implements Database.batchable<sObject> {
+global class Auto_Submit_BigMachines_Quote implements Database.batchable<sObject> {
   
   public String query = 'SELECT Id,Name,LX_Auto_Approve__c,Bid_Price_Change_flag__c,BigMachines__Status__c FROM BigMachines__Quote__c WHERE LX_Auto_Approve__c=true AND Bid_Price_Change_flag__c = true AND (BigMachines__Status__c = \'Pending\' OR BigMachines__Status__c = \'Revision Pending\')';
    
